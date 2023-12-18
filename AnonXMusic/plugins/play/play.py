@@ -1,11 +1,12 @@
+import requests
 import random
 import string
-
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardMarkup, InputMediaPhoto, Message
+from pyrogram.types import InlineKeyboardMarkup, InputMediaPhoto, Message, InlineKeyboardButton
 from pytgcalls.exceptions import NoActiveGroupCall
 
 import config
+from strings.filters import command
 from AnonXMusic import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
 from AnonXMusic.core.call import Anony
 from AnonXMusic.utils import seconds_to_min, time_to_seconds
@@ -22,22 +23,34 @@ from AnonXMusic.utils.inline import (
 )
 from AnonXMusic.utils.logger import play_logs
 from AnonXMusic.utils.stream.stream import stream
-from config import BANNED_USERS, lyrical
-
-
-@app.on_message(
-    filters.command(
+from config import BANNED_USERS, lyrical, CHANEEL #استدعاء متغير قناة الاشتراك الاجباري
+force_btn = InlineKeyboardMarkup(
+    [
         [
-            "play",
-            "vplay",
-            "cplay",
-            "cvplay",
+            InlineKeyboardButton(   
+              text=f"اضغط للاشتراك", url=f"https://t.me/{CHANEEL}",)   # جلب الاستدعاء             
+        ],        
+    ]
+)
+async def check_is_joined(message, Message, client):    
+    try:
+        userid = message.from_user.id
+        user_name = message.from_user.first_name
+        status = await app.get_chat_member("Y_Y_Y_I", userid) # جلب الاستدعاء
+        return True
+    except Exception:
+        await message.reply_text(f'⌯︙عذࢪاَ عزيزي ↫ {user_name} \n⌯︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ\nꔹ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ꔹ',reply_markup=force_btn)
+        return False
+
+@app.on_message(command(["شغل","تشغيل"])
+    & filters.group
+    & ~BANNED_USERS
+)
+@app.on_message(filters.command(["play","fddgg","frghy","cvplay",
             "playforce",
             "vplayforce",
             "cplayforce",
-            "cvplayforce",
-        ]
-    )
+            "cvplayforce",])
     & filters.group
     & ~BANNED_USERS
 )
@@ -53,6 +66,8 @@ async def play_commnd(
     url,
     fplay,
 ):
+    if not await check_is_joined(message, Message, client): #يقوم بعمل cheek للاعضاء الغير مشتركين
+        return
     mystic = await message.reply_text(
         _["play_2"].format(channel) if channel else _["play_1"]
     )
