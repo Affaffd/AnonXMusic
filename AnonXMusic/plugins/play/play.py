@@ -36,7 +36,7 @@ async def check_is_joined(message, Message, client):
     try:
         userid = message.from_user.id
         user_name = message.from_user.first_name
-        status = await app.get_chat_member("Y_Y_Y_I", userid) # جلب الاستدعاء
+        status = await app.get_chat_member("nxcsfbd", userid) # جلب الاستدعاء
         return True
     except Exception:
         await message.reply_text(f'⌯︙عذࢪاَ عزيزي ↫ {user_name} \n⌯︙عـليك الاشـتࢪاك في قنـاة البـوت اولآ\nꔹ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ꔹ',reply_markup=force_btn)
